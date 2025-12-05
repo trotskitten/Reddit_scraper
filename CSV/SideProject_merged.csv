@@ -29651,3 +29651,341 @@ And of course, all the core features are still there:
 You can try the new features here: [https://postspark.app/screenshot](https://postspark.app/screenshot)
 
 Let me know what you think!",world1dan,1pewkad,SideProject,05-12-2025,15:31:49,https://v.redd.it/o7jkk30wbe5g1
+"Just launched Aurelia, ai co-founder (looking for feedback)","We created an AI Co-Founder Aurelia that you can speak to and she will be an app for you. 
+
+As right of right now, she only can build app through voice. 
+
+Next month she is going to be able to build pitch deck, go to market strategy and more. Can you please check it out and let me know your thoughts.
+
+The URL is https://Aurelia.so ",AlyInnovate,1pezirj,SideProject,05-12-2025,17:28:07,https://i.redd.it/ty20iuhpwe5g1.jpeg
+A small update from my side project’s affiliate program,"In the past month, the top affiliate for Turbo0 made 5 sales. With Turbo0 taking a 30% commission, I sent him a $25 payout today.
+
+It’s a modest number, but it’s nice to see the affiliate program steadily contributing alongside everything else.
+
+If you’re running an affiliate program for your own side project, I’d love to hear how it’s been working out for you.",Soggy_South409,1pezfby,SideProject,05-12-2025,17:24:28,https://www.reddit.com/r/SideProject/comments/1pezfby/a_small_update_from_my_side_projects_affiliate/
+What are you building right now?,"Hello everyone,  
+What are you working on? I will go first, I am Working on [Snap Shots](https://www.getsnapshots.app/) \- a tool that helps you create visuals, social banners, og images and product mockups from Screenshots and Images.  
+Share your works with us!",tech_guy_91,1pezeku,SideProject,05-12-2025,17:23:42,https://v.redd.it/axbag0jove5g1
+"I watched my self-employed friend get hit with a 1600 tax bill because of health insurance. So, I built the calculator he needed.","https://reddit.com/link/1pezdr1/video/9e0nathjve5g1/player
+
+Last year, I had an idea for a simple health insurance tool—the kind of tool you wonder about building but end up putting aside due to shiny object syndrome.
+
+Then, last tax season, a friend who is a freelancer got struck. He owed **$1,600** because the software he used failed to calculate the complex interaction between his health premiums and his taxes. 
+
+I built it this year: **focused** and on a **mission** to address a huge problem that major software programs have been unable to solve for over 10+ years.
+
+The result is **FreelancerHealth.co**: A simple, clean, and actually helpful calculator that gives self-employed people the single most accurate number: **Your Estimated Monthly Cost After All Tax Benefits Are Applied.** It's built for long-term financial stability, not guesswork.
+
+It’s live now: [**FreelancerHealth.co**](http://freelancerhealth.co/) **(we're currently in beta and testing a selected group of cities and zip codes). You can request your zip code**.
+
+**Why I Built It:**
+
+Health insurance taxes can feel really complex when you’re just trying to understand:
+
+* How your **Modified Adjusted Gross Income (MAGI)** affects your subsidy.
+* How the **Premium Tax Credit (PTC)** affects your **Self-Employed Health Insurance Deduction (SEHID)**.
+* Why are you receiving a large refund or might owe money back to the IRS, even if you paid your premiums on time?
+
+FreelancerHealth is my attempt to make that entire experience **calmer, faster, and less stressful** by providing you with a single, final reconciliation number.
+
+**Our current stack (for the builders)**
+
+* **Logic:** Built with the **official IRS Publication 974 methodology**—we run the required iterative loop to solve for both **Final PTC** and **Final SEHID** simultaneously.
+* Frontend: HTML5, CSS3, JavaScript (Vanilla)
+* Backend/logic: Serverless Functions (Python)
+* Database/Auth: Supabase
+* Deployment: Vercel
+* **Data:** Pulls real **SLCSP (Second Lowest Cost Silver Plan)** data based on your ZIP code/age for an accurate benchmark calculation.
+
+**What’s next**
+
+If people find real value, we plan to release more comprehensive tax filing guidance. And a deeper analysis of how to optimize your premium contribution, plus much more. For now, I'm excited that it's no longer an idea—building it was quite challenging, **but I'm excited for it to start helping people finally**.
+
+For my freelancers and self-employed individuals, if you buy insurance through the ACA Marketplace:
+
+* I need 8 founding testers **who have faced this specific SEHID/ACA headache** to stress-test the tool before launch.
+* **FREE LIFETIME ACCESS** to the calculator for your valuable feedback.
+* Apply here (8 slots available): [https://forms.gle/ub4ucDrhWZQtujwU6](https://forms.gle/ub4ucDrhWZQtujwU6)
+* *Why:* Separating the ""FREE LIFETIME ACCESS"" makes it pop off the page and emphasizes the value they receive for being an early adopter.
+
+If you have a minute, I’d genuinely love feedback from this sub:
+
+* Does the ""Monthly Estimated Cost"" accurately reflect your financial stress point?
+* Are there any obvious gaps or confusing parts of the UX/inputs?
+* What would make a tool like this a ""must-have"" for you?
+
+I appreciate everyone!",Wishgranted101,1pezdr1,SideProject,05-12-2025,17:22:50,https://www.reddit.com/r/SideProject/comments/1pezdr1/i_watched_my_selfemployed_friend_get_hit_with_a/
+"I built an offline survival AI - [Update, 14k users!]","Morning everyone! I'm building an offline survival system called The Ark.
+
+I work with actual survival experts to get their expertise into the chatbot. It has accuracy scores, allows users to verify the AI's answers easily, and can even provide images for its answers.
+
+It also ensures you always have an offline map of your area automatically with no work on your part.
+
+Plus there's the survival library of guides stored on-device, and a private, offline messager.
+
+The physical device (emp-proof, water-proof, solar-charged, \~Nintendo DS sized) is the goal with me using the mobile app to fine-tune the software and UX as a first step.
+
+The mobile app helps for FREE and is very helpful if you're lost in the outdoors.
+
+Link to app: [https://apps.apple.com/us/app/survival-ai-the-ark/id6746391165](https://apps.apple.com/us/app/survival-ai-the-ark/id6746391165)",scorpioDevices,1pezayz,SideProject,05-12-2025,17:19:59,https://www.reddit.com/gallery/1pezayz
+Where would you go about building your waitlist for a B2C Saas?,"I've put my waitlist as my landing page : [jobloo.co](http://jobloo.co), it got me a few sign-ups mainly from friends and posts on forums. 
+
+Where would be the best place to build the waitlist? I'm not getting traction on Tiktok or reels
+
+My app Jobloo is a tinder for jobs: you swipe on job offers and an AI applies for you.",RKTbull,1pez8sw,SideProject,05-12-2025,17:17:44,https://www.reddit.com/r/SideProject/comments/1pez8sw/where_would_you_go_about_building_your_waitlist/
+Saw a claim Sora’s 30-day retention is ~1% I built a Sora batch generator (100 videos in minutes). Am I building a fake-demand tool?,"Hey r/SideProject  need brutally honest feedback.
+
+I saw a viral post (third-party estimates) saying Sora retention drops hard  like ~1% 30-day retention.
+That made me question my side project  I’ve spent the past month building a tool around Sora.
+
+So I built a simple tool focused on ONE thing: batching.
+
+The idea is simple: instead of clicking “Generate” 30 times, you kick off a whole batch in minutes (up to 100), then come back later and manually pick the best outputs.
+
+Real workflow: I can queue ~30 runs in ~3 minutes, then pick a short list for A/B testing.
+
+Link (happy to remove if too promo): https://batchvideo.ai/
+
+I wanted to ask: am I solving a real pain for power users… or did I just spend a month building something nobody cares about?
+
+If you were the target user, what’s the ONE feature you’d want next?",RedditAccount8900,1peyy0d,SideProject,05-12-2025,17:06:20,https://www.reddit.com/gallery/1peyy0d
+Turn your macros into real meals – launched GetYourMacros last week,"Hey everyone,
+
+My girlfriend and I are both pretty obsessed with the gym, and for years we had the same daily dilemma:  
+we knew our macros (proteins / carbs / fats)… but had no idea what to actually cook.
+
+Most days we were either:
+
+* Eating the same 3–4 meals on repeat
+* Wasting time with spreadsheets and calorie apps
+* Or giving up and just “eyeballing” everything
+
+So we built **GetYourMacros**, and released it last week. It’s a cross-platform app (Flutter) that tries to solve exactly this problem.
+
+# What GetYourMacros does
+
+Instead of starting from calories or a huge food database, you start from your **macro targets**, and the app uses AI to turn them into concrete recipes.
+
+You can:
+
+* Enter your **meal macros**
+* Select your **diet type**: omnivore, vegetarian, vegan, pescatarian
+* Optionally add: favourite cuisine, number of servings, prep time, difficulty, available equipment
+
+Then the app generates complete dishes with:
+
+* **Ingredients** (already balanced to your macros)
+* **Step-by-step preparation**
+
+# Small social layer
+
+We also added a lightweight community part:
+
+* Share your own fitness recipes with the community
+* Upvote recipes you like
+* Join a **weekly recipe contest** where the most-voted recipe wins a small prize (we’re still experimenting with this)
+
+# Links
+
+* **Android (Google Play)**: [https://play.google.com/store/apps/details?id=it.getyourmacros.app&pcampaignid=web\_share](https://play.google.com/store/apps/details?id=it.getyourmacros.app&pcampaignid=web_share)
+* **iOS (App Store)**: [https://apps.apple.com/app/getyourmacros/id6755608966](https://apps.apple.com/app/getyourmacros/id6755608966)
+
+I’d really love your honest thoughts on the app ❤️
+
+We built this because *we* needed it, but now the goal is to make it genuinely useful for anyone who tracks macros and wants to eat well without overthinking every meal.
+
+I’m happy to answer any questions, and I’d be super grateful for any kind of feedback — UX, bugs, naming, missing features, whatever you notice 🙏
+
+https://preview.redd.it/wsth5mz8te5g1.jpg?width=1284&format=pjpg&auto=webp&s=2e90672defe8af116d26af33d5166b3595a7a10e
+
+",Alfy-26,1peyxxq,SideProject,05-12-2025,17:06:15,https://www.reddit.com/r/SideProject/comments/1peyxxq/turn_your_macros_into_real_meals_launched/
+Ultimate Tool for Making Beautiful Screenshots & Device Mockups - Now with video support!,"Hey!
+
+I made an app that makes it incredibly easy to create stunning mockups and screenshots - perfect for showing off your app, website, or product designs.
+
+✨ **Features**
+
+* 🎬 **Video Support:** Drop in a screen recording, place it inside device frames, and export as video. 
+* ⚡️ **Auto-Backgrounds:** The app automatically extracts colors from your screenshot and generates a matching background. 
+* 🎥 **Keyframe Animations:** A simple timeline editor to add zooms, pans, and 3D movements to your mockups.
+* **Website Screenshots:** Instantly grab a screenshot by entering any URL.
+* **30+ Mockup Devices & Browser Frames:** Showcase your project on phones, tablets, laptops, desktop browsers, and more.
+* **Fully Customizable:** Change backgrounds, add overlay shadows, tweak layouts, apply 3D transforms, use multi-image templates, and a ton more.
+* **Annotation Tool:** Add text, stickers, arrows, highlights, steps, and other markup.
+
+**Try it out:** [https://postspark.app/device-mockup](https://postspark.app/device-mockup)
+
+Would love to hear what you think!",world1dan,1peyvvw,SideProject,05-12-2025,17:04:04,https://v.redd.it/stgqs614se5g1
+What actually happens after you launch a side project (no one talks about this part),"I’ve launched several small projects over the last few months, and one thing keeps surprising me:
+
+**The huge gap between what social media sets you up to expect… and what actually happens when you ship something without an audience.**
+
+On X and LinkedIn, it looks like every indie founder gets:
+
+* “200 signups on day one!”
+* “10k MRR in 30 days!”
+* “My launch blew up overnight!”
+
+So you start to believe *launch → traction*.
+
+But here’s the reality I’ve hit over and over (and I don’t think I’m alone):
+
+**You launch… and it’s mostly silence.**  
+Not because the project is bad.  
+Not because people don’t need it.  
+But because distribution is a *separate skill*, and most of us underestimate that part.
+
+After a launch, there’s this quiet emotional dip:
+
+* you refresh analytics a little too often
+* you wonder if anyone cares
+* you question whether the idea was worth building
+* you debate sunsetting it way too soon
+
+It’s a weird mix of excitement, vulnerability, and disappointment — and very few people talk about it.
+
+What I’ve learned so far:
+
+* Launching isn’t the end; it’s the beginning of a long feedback loop
+* Traction rarely comes from the launch itself
+* Consistency matters more than virality
+* Momentum comes from shipping *again*, not waiting for applause
+* An audience grows slowly… and then suddenly
+
+I’m still figuring this out, but I wanted to share this because it’s the part of indie building that’s rarely discussed openly.
+
+**Curious if anyone else here has gone through the same “post-launch quiet zone”?**  
+**What helped you push through it?**",Sweet-Band1158,1peys7h,SideProject,05-12-2025,17:00:25,https://www.reddit.com/r/SideProject/comments/1peys7h/what_actually_happens_after_you_launch_a_side/
+Update: Benchmarked our “natural language → table” tool on BIRD-SQL. Here’s how close it gets to a human,"A few weeks ago I posted here about a tool we’re building (TableFirst) that lets non-technical users describe a table in plain English and have the system find the right sources and build it for them.  
+A couple of you roasted it as “Power Query with hallucinations”, which was fair enough. If you’re skeptical, it’s on me to bring numbers.
+
+So we took a standard text-to-SQL benchmark (BIRD-SQL Mini-Dev – 500 real queries across messy DBs) and ran our full pipeline against it end to end.
+
+For the *table discovery* part (finding the right inputs among many candidates), our system:
+
+* Returned the exact correct set of tables in **84.2%** of the questions
+* Covered **92.6%** of the ground-truth tables overall
+* And **97.2%** of the tables it returned were actually needed
+
+That’s not perfect, but it’s good enough that you don’t have to manually dig through 100+ tables every time you want a “weekly payroll by department and region” type report.
+
+The *SQL generation* side is harder. In fully automated runs, we’re sitting at about **60.6%** execution accuracy on the benchmark. That’s below a good human analyst, but here’s the trade-off:
+
+* Human analyst: \~93% accurate, takes hours, costs hundreds of dollars
+* Our system: \~85% “usable” after a quick review, runs in seconds, costs cents per run
+
+In practice, the way we’re positioning this is: it’s a very fast junior analyst. It does the grunt work (search, joins, skeleton SQL) and a human reviews and corrects where needed. The big win is that you can afford to run multiple error-correction passes without caring about cost.
+
+If anyone here wants to see the gory details (benchmark setup, metrics, failure modes, examples), I wrote up a longer post with charts and methodology: [blog post](https://medium.com/@missinglayer/bird-sql-how-we-benchmark-tablefirst-i-9b434e3634f5)
+
+I’m also looking for 5–10 people who swim in messy Excel/SharePoint/data-lake tables and are willing to kick the tires on our beta and tell me where it breaks. Happy to give early access and prioritize your use cases if you’re up for that, just comment or DM and I’ll follow up.",canongun,1peymfh,SideProject,05-12-2025,16:54:13,https://www.reddit.com/r/SideProject/comments/1peymfh/update_benchmarked_our_natural_language_table/
+I made an AI podcast studio,"Hey  
+
+Been messing around with AI for a few weeks now, trying random stuff  
+
+Last week, I made a tool to generate and build AI videos    
+This week, I wanted to do something more ""specific,"" so I made a 100% podcast generator  
+
+**Here’s how it works:**  
+
+1. Dialogues are enhanced and generated with Elevenlabs  
+2. Videos are made with Veo 3  
+3. I use a lipsync process to match everything up  
+
+
+
+The stack I used:  
+
+* Nano Banana (characters)  
+* Veo 3 (video) + lipsync  
+* Elevenlabs (voice)  
+* Supabase  
+* NextJS  
+* Capcut  
+* my wallet (I’m broke lol)  
+
+
+
+Tbh, I think it’s pretty cool, not sure if it’s useful or has any potential, but man, what a crazy time to be alive!
+
+  
+Bye",Wwwwwwwwat,1peyl55,SideProject,05-12-2025,16:52:48,https://v.redd.it/uihztsulpe5g1
+Tester gesucht,"Hallo zusammen,
+
+ich suche Tester für mein Tool [https://betriebskostenchecker.de/](https://betriebskostenchecker.de/)
+
+Damit können Nebenkostenabrechnungen geprüft werden.
+
+  
+Schaut auch gern meine anderen Projekte auf meiner Website [https://tobiasmeinhardt.de/](https://tobiasmeinhardt.de/) an.",Nice_Net1609,1peyiuo,SideProject,05-12-2025,16:50:21,https://www.reddit.com/r/SideProject/comments/1peyiuo/tester_gesucht/
+How long did it take you to get your first paying customer?,"I recently launched my first small SaaS and was surprised to get 5 paying users within the first few days.  
+I’m curious how long it took other founders to get their first customer, and what the turning point was for you.
+
+Would love to hear your experiences.",monkmodeceo,1peyf6p,SideProject,05-12-2025,16:46:21,https://www.reddit.com/r/SideProject/comments/1peyf6p/how_long_did_it_take_you_to_get_your_first_paying/
+"I got rejected by Apple 6 times building my second app. So I built a boilerplate that auto-generates the annoying stuff (privacy policies, account deletion, terms, etc.) + custom Cursor rules","Hey everyone,
+
+I'm an indie dev who made $50K with my first consumer app. When I started building my second one, I thought ""this will be easy, I know what I'm doing now.""
+
+Nope. Apple rejected me 4 times.
+
+Each time it was something stupid I forgot:
+
+* Account deletion flow missing
+* Privacy policy didn't match the SDKs I used
+* Terms and conditions link was broken
+* Some random guideline about data handling
+
+The worst part? I'd already integrated these same SDKs in my first app. I was literally doing the same setup work twice before I could actually build my product.
+
+After finally launching, I realized I want to build more apps. But I'm not spending days on boilerplate setup again and I’m sure you neither.
+
+So I built [shipapps.now](http://shipapps.now) \- answer a quick questionnaire about your new app idea and it’s tech stack, and then it generates:
+
+* A complete React Native/Expo boilerplate
+* All the required legal docs (privacy policy, terms, etc.) tailored to what third party SDKs you are using
+* Template screens (onboarding, Q&A flows, common UI patterns)
+* Custom Cursor rules based on your specific setup
+
+That last part is actually my favorite feature. The Cursor rules know exactly which SDKs you're using and how they're configured, so when you're vibe coding with Cursor, it doesn't hallucinate wrong implementations or suggest deprecated APIs.
+
+I'm launching this as v1 today. First 20 users get direct support from me - I'll even hop on calls to help you set things up or implement specific features you need.
+
+My goal is to help devs who know Cursor skip straight to building their actual product instead of fighting with setup and App Store review bullshit.
+
+Would love any feedback! And if you've been burned by App Review rejections, I feel your pain.",Sea-Exercise536,1peydob,SideProject,05-12-2025,16:44:45,https://www.reddit.com/r/SideProject/comments/1peydob/i_got_rejected_by_apple_6_times_building_my/
+My Travel Expenses Tracker App - TravelBear.app,"Quick update on TravelBear.
+Budget tracking and multi-currency expenses are working nicely, so now I’m shaping the new “Reports” tab.
+
+Before I lock in the design:
+What reports do you want when reviewing a trip?
+Top categories, overspend warnings, group-split summaries, exchange-rate impact… something else?
+
+If you travel often, what kind of expense insights would actually be useful?
+Daily spend? Food vs transport? Exchange-rate view?
+Or something nobody builds but you always wish existed?
+
+Please share would love to hear your ideas 😃",lalantony,1peyctr,SideProject,05-12-2025,16:43:53,https://i.redd.it/lqyqih5toe5g1.jpeg
+Here are two early concerns for every startup founder,"As a solo startup founder I focus on two main concerns when I launch an app:
+
+1. Getting your first users
+2. Getting feedback from those users
+
+Number 1 matters most because it leads to number 2 once you set up a simple feedback channel.
+
+Finding the right first users depends on your target customer.
+
+* For B2B, cold email or phone outreach works best.
+* For B2C, ads offer the fastest path. Start with small tests. It helps if you already have an audience.
+
+Since you are starting out, strong conversions depend on constant feedback and early social proof. Add a clear way for users to share comments. If you want faster visibility, launch on Product Hunt. It is crowded, so I built an alternative launch platform called NextGen Tools. I limit entries to 70 each week with weekly rankings. This gives you a higher chance of views and feedback. Your tool stays on the landing page for a full week.
+
+If you want quick social proof and exposure, launch at [https://www.nxgntools.com/s/r](https://www.nxgntools.com/s/r)  
+Add the badge and use it as social proof when you do not have testimonials yet.",doppelgunner,1peyahg,SideProject,05-12-2025,16:41:16,https://i.redd.it/z8lx8caple5g1.png
+I made a spelling a game to help get better at spelling! (It's free),"Hey guys!  
+  
+I posted here before about working on a spelling game because I’m terrible at spelling.   
+  
+The app is officially live now! (Only on the app store, sry android users)   
+  
+It’s completely free and has no ads. Hope it helps anyone else who struggles with spelling like I do, haha.",SSJ2Teen-Gohan,1pey9r2,SideProject,05-12-2025,16:40:28,https://apps.apple.com/gb/app/spell-o/id6755662739
+Placed,They loved my project ,Actual-Dragonfruit-4,1pey95v,SideProject,05-12-2025,16:39:48,https://i.redd.it/cxdz3oy2oe5g1.png
