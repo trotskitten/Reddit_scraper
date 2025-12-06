@@ -10,7 +10,6 @@ os.makedirs(TEMP_CSV_FOLDER, exist_ok=True)
 def merge_clean_save(
     df,
     merged_filename,
-    log_filename,  # kept for compatibility but unused
 ):
     """
     Simplified version:
