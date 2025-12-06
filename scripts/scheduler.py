@@ -2,6 +2,7 @@ import asyncio
 import sys
 from common.reddit_scraper import run_keyword_scraper, run_subreddit_scraper
 from common.cleaning import deduplicate_merged_csvs
+import os
 
 # Repo root: scripts → Reddit_scraper
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
