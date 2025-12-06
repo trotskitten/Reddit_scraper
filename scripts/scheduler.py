@@ -3,7 +3,10 @@ import sys
 from common.reddit_scraper import run_keyword_scraper, run_subreddit_scraper
 from common.cleaning import deduplicate_merged_csvs
 
-BASE_DIR = r"C:\Users\ranik\OneDrive\Desktop\Sociologia digitale e Analisi del Web\Tesi di laurea\CSV"
+# Repo root: scripts → Reddit_scraper
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
+os.makedirs(DATA_DIR, exist_ok=True)
 
 GENAI_KEYWORDS = [
     "ai bot",
@@ -58,7 +61,7 @@ def print_global_summary(genai_stats, consulting_stats, sub_stats):
     # We extract leaderboard from GENAI file
     try:
         import pandas as pd
-        df = pd.read_csv(r"C:\Users\ranik\OneDrive\Desktop\Sociologia digitale e Analisi del Web\Tesi di laurea\CSV\GENAI_merged.csv")
+        df = pd.read_csv(os.path.join(DATA_DIR, "GENAI_merged.csv"))
         counts = df["community"].value_counts().head(25)
         for i, (sub, count) in enumerate(counts.items(), start=1):
             print(f"{i}. {sub:<25} {count} posts")
@@ -72,7 +75,7 @@ def deduplicate_all_csvs():
     """Run deduplication across all merged CSVs and log the results."""
     print("======= DEDUPLICATION RUN =======")
     try:
-        results = deduplicate_merged_csvs(quiet=True)
+        results = deduplicate_merged_csvs(csv_folder=DATA_DIR, quiet=True)
         for result in results:
             delta = result["old_total"] - result["new_total"]
             print(f"{result['filename']}: {result['old_total']} -> {result['new_total']} (-{delta})")
@@ -89,7 +92,6 @@ async def run_all_once():
         keywords=GENAI_KEYWORDS,
         merged_filename="GENAI_merged.csv",
         log_filename="GENAI_log.csv",
-        base_dir=BASE_DIR,
         sleep_secs=10,
     )
 
@@ -99,17 +101,14 @@ async def run_all_once():
         keywords=CONSULTING_KEYWORDS,
         merged_filename="consulting_kw_merged.csv",
         log_filename="consulting_log.csv",
-        base_dir=BASE_DIR,
         sleep_secs=5,
     )
 
     sub_stats = await run_subreddit_scraper(
         communities=SUBREDDIT_COMMUNITIES,
-        base_dir=BASE_DIR,
         per_subreddit_limit=250,
     )
     return genai_stats, consulting_stats, sub_stats
-
 
 async def scheduler():
     """Main hourly loop with clean terminal + countdown refresh."""
