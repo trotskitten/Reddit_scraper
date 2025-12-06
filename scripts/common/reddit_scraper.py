@@ -121,7 +121,6 @@ async def run_subreddit_scraper(
         stats = await _scrape_single_subreddit(
             reddit=reddit,
             community=community,
-            base_dir=base_dir,
             limit=per_subreddit_limit,
         )
         total_raw += stats["raw_count"]
