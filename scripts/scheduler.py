@@ -161,4 +161,4 @@ async def countdown_minutes(minutes):
 
 
 if __name__ == "__main__":
-    asyncio.run(scheduler())
+    asyncio.run(run_cycle())
