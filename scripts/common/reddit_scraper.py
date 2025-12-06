@@ -81,7 +81,7 @@ async def run_keyword_scraper(
     stats = merge_clean_save(
         df=cleaned_df,
         merged_filename=merged_filename,
-        log_filename=log_filename
+        log_filename=log_filename,
     )
 
     # Override raw_total with actual collected count (pre-cleaning)
@@ -101,7 +101,6 @@ async def run_keyword_scraper(
         "final_total": stats["final_total"],
         "new_posts": stats["new_posts"],
     }
-
 
 async def run_subreddit_scraper(
     *,
