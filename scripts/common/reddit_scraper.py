@@ -20,7 +20,6 @@ async def run_keyword_scraper(
     community: str,
     keywords,
     merged_filename: str,
-    log_filename: str,
     sleep_secs: int = 5,
 ):
     """
