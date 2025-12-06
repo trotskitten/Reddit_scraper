@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: data_tmp/*.csv
+          path: data_tmp/*_merged_*.csv
           if-no-files-found: warn
           retention-days: 3
           
