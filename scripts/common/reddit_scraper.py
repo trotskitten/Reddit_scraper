@@ -78,11 +78,11 @@ async def run_keyword_scraper(
     df = pd.DataFrame(posts)
     cleaned_df, removed_empty, removed_duplicates = clean_dataframe(df, text_column="Text")
 
-   stats = merge_clean_save(
-       df=cleaned_df,
-       merged_filename=merged_filename,
-       log_filename=log_filename,
-   )
+    stats = merge_clean_save(
+        df=cleaned_df,
+        merged_filename=merged_filename,
+        log_filename=log_filename,
+    )
 
     # Override raw_total with actual collected count (pre-cleaning)
     stats["raw_total"] = total_raw
