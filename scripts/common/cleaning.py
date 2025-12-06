@@ -42,7 +42,7 @@ def clean_dataframe(df, text_column="Text"):
     return df, removed_empty, removed_duplicate
 
 
-def deduplicate_merged_csvs(csv_folder=CSV_FOLDER, quiet=False):
+def deduplicate_merged_csvs(csv_folder, quiet=False):
     """
     Deduplicate all *_merged.csv files in a folder.
 
