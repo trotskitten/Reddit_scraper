@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Reddit scraper run – CSVs ready"
-          to: your@email.here
+          to: ra.nike28@gmail.com
           from: ${{ secrets.SMTP_USERNAME }}
           body: |
             The Reddit scraper has finished running.
