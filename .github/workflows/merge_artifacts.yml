@@ -23,6 +23,7 @@ jobs:
           pattern: "reddit-scraper-data-*"
           path: merged_raw
           merge-multiple: true
+          run-id: all
 
       - name: List downloaded artifacts
         run: |
