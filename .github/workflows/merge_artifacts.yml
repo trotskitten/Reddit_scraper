@@ -1,12 +1,24 @@
 name: Merge Reddit Scraper Artifacts
 
 on:
-  workflow_dispatch:  # manual trigger only for now
+  workflow_dispatch:  # manual trigger for now
 
 jobs:
   merge-artifacts:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print start message
-        run: echo "Merging artifacts workflow started."
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download ALL artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "*"
+          path: merged_raw  # all artifacts extracted here
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifacts:"
+          ls -R merged_raw
