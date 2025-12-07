@@ -1,8 +1,8 @@
-name: test new Reddit Scraper
+name: Reddit Scraper
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # run every 5 minutes (UTC)
+    - cron: "*/5 00-03 * * *"   # run every 5 minutes (UTC)
   workflow_dispatch:       # allow manual run from GitHub UI
 
 jobs:
@@ -12,10 +12,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          # Needed so we can push commits later
-          persist-credentials: true
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,70 +28,15 @@ jobs:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
 
-      # 🔹 NEW: merge this run's *_merged.csv with historical CSVs
-      - name: Merge with historical CSVs
-        run: |
-          mkdir -p data_history
-
-          python << 'EOF'
-          import glob, os
-          import pandas as pd
-
-          os.makedirs("data_history", exist_ok=True)
-
-          # all merged CSVs from THIS run
-          current_files = glob.glob("data_tmp/*_merged.csv")
-
-          for f in current_files:
-              base = os.path.basename(f)              # e.g. "subreddit_merged.csv"
-              hist_path = os.path.join("data_history", base)  # cumulative file per subreddit
-
-              df_new = pd.read_csv(f)
-
-              if os.path.exists(hist_path):
-                  df_old = pd.read_csv(hist_path)
-                  df = pd.concat([df_old, df_new], ignore_index=True)
-
-                  # If you have a unique post ID column, de-duplicate by that
-                  for key in ["ID", "Text"]:
-                      if key in df.columns:
-                          df = df.drop_duplicates(subset=[key])
-                          break
-                  else:
-                      df = df.drop_duplicates()
-              else:
-                  df = df_new
-
-              df.to_csv(hist_path, index=False)
-          EOF
-
-      # 🔹 NEW: commit updated history back to repo so next run can see it
-      - name: Commit updated history
-        if: github.ref == 'refs/heads/main'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add data_history || true
-          # Avoid failing if no changes
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
-
-          git commit -m "Update cumulative Reddit CSVs [skip ci]"
-          git push
-
-      # 🔹 Now create timestamped copies from the *cumulative* CSVs
-      - name: Create timestamped copies of cumulative CSVs
+      - name: Create timestamped copies of merged CSVs
         run: |
           ts=$(date -u +'%Y%m%d_%H%M%S')
-          mkdir -p artifacts
-          for f in data_history/*.csv; do
+          for f in data_tmp/*_merged.csv; do
             [ -e "$f" ] || continue
             base=$(basename "$f" .csv)
-            cp "$f" "artifacts/${base}_${ts}.csv"
+            cp "$f" "data_tmp/${base}_${ts}.csv"
           done
-
+          
       - name: Set artifact name with timestamp
         run: echo "ARTIFACT_NAME=reddit-scraper-data-$(date -u +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
 
@@ -103,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: artifacts/*.csv
+          path: data_tmp/*_merged_*.csv
           if-no-files-found: warn
           retention-days: 3
           
@@ -115,15 +56,13 @@ jobs:
           secure: true
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Reddit scraper [TEST]"
+          subject: "Reddit scraper run – CSVs ready"
           to: ra.nike28@gmail.com
           from: ${{ secrets.SMTP_USERNAME }}
           body: |
             The Reddit scraper has finished running.
 
-            The CSVs in this run's artifact are cumulative (all previous runs merged).
-
-            You can download them here:
+            You can download the CSVs from this run here:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             Repository: ${{ github.repository }}
