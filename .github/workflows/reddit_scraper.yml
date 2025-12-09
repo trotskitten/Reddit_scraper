@@ -2,7 +2,7 @@ name: Reddit Scraper
 
 on:
   schedule:
-    - cron: "*/120 * * * *"   # run every 5 minutes (UTC)
+    - cron: "5 */2 * * *"   # run every 5 minutes (UTC)
   workflow_dispatch:       # allow manual run from GitHub UI
 
 jobs:
