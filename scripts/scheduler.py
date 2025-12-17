@@ -32,7 +32,7 @@ SUBREDDIT_COMMUNITIES = [
     "SideProject",
     "ChatGPTcomplaints",
     "ChatGPTPro",
-    "ChatGPTJailbreak",
+    #"ChatGPTJailbreak", #banned 17-12-2025
     "AI_Agents",
     "generativeAI",
 ]
