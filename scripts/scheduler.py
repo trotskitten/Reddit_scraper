@@ -10,14 +10,11 @@ DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
 os.makedirs(DATA_DIR, exist_ok=True)
 
 GENAI_KEYWORDS = [
-    "ai bot",
     "gen ai",
-    "ai tools",
     "chatgpt",
     "genai",
     "generative artificial intelligence",
-    "ai chat",
-    "generative ai",
+    "generative ai"
 ]
 
 CONSULTING_KEYWORDS = ["consulting", "consultant", "consultancy"]
