@@ -9,29 +9,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-GENAI_KEYWORDS = [
-    "gen ai",
-    "chatgpt",
-    "genai",
-    "generative artificial intelligence",
-    "generative ai"
-]
+GENAI_KEYWORDS = []
 
-CONSULTING_KEYWORDS = ["consulting", "consultant", "consultancy"]
+CONSULTING_KEYWORDS = [] #it can be empty
 
 SUBREDDIT_COMMUNITIES = [
-    "ChatGPT",
-    "consulting",
-    "AiAssisted",
-    "antiai",
-    "GeminiAI",
-    "GenAI4all",
-    "SideProject",
-    "ChatGPTcomplaints",
-    "ChatGPTPro",
-    #"ChatGPTJailbreak", #banned 17-12-2025
-    "AI_Agents",
-    "generativeAI",
+    "ainbow",
+    "asktransgender",
+    "lgbt",
+    "trans",
+    "transgender",
+    "gay",
+    "queer",
+    "LGBTQ",
+    "AskLGBT"
 ]
 
 
