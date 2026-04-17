@@ -9,9 +9,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-GENAI_KEYWORDS = []
+GENAI_KEYWORDS = ["transgender","non binary", "agender"]
 
-CONSULTING_KEYWORDS = [] #it can be empty
+CONSULTING_KEYWORDS = ["queer", "gay", "lesbian"] #it can be empty
 
 SUBREDDIT_COMMUNITIES = [
     "ainbow",
