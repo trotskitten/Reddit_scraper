@@ -23,7 +23,7 @@ jobs:
           pip install asyncpraw pandas
 
       - name: Run scraper
-        run: python scripts/scheduler.py
+        run: python scripts/scheduler_queer.py
         env:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
