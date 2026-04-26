@@ -16,8 +16,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__)) if "__file__" in globals()
 DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-GENAI_KEYWORDS = ["transgender", "non binary", "agender"]
-CONSULTING_KEYWORDS = ["queer", "gay", "lesbian"]  # can be empty
+QUEER_KEYWORDS = ["transgender", "non binary", "agender"]
+QUEER_KEYWORDS2 = ["queer", "gay", "lesbian"]  # can be empty
 
 SUBREDDIT_COMMUNITIES = sorted(set([
     "ainbow",
@@ -376,18 +376,18 @@ async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs
 # SUMMARY / ORCHESTRATION
 # =========================
 
-def print_global_summary(genai_stats, consulting_stats, sub_stats):
+def print_global_summary(queer_stats, queer2_stats, sub_stats):
     """Unified clean summary printed after all scrapers run."""
     print("\n========== GLOBAL SUMMARY ==========")
 
     print(
-        f"GENAI: {genai_stats.get('new_posts', 0)} new posts "
-        f"(raw: {genai_stats.get('raw_total', 0)}, unique: {genai_stats.get('final_total', 0)})"
+        f"QUEER: {queer_stats.get('new_posts', 0)} new posts "
+        f"(raw: {queer_stats.get('raw_total', 0)}, unique: {queer_stats.get('final_total', 0)})"
     )
 
     print(
-        f"CONSULTING: {consulting_stats.get('new_posts', 0)} new posts "
-        f"(raw: {consulting_stats.get('raw_total', 0)}, unique: {consulting_stats.get('final_total', 0)})"
+        f"QUEER2: {queer2_stats.get('new_posts', 0)} new posts "
+        f"(raw: {queer2_stats.get('raw_total', 0)}, unique: {queer2_stats.get('final_total', 0)})"
     )
 
     print(
@@ -397,9 +397,9 @@ def print_global_summary(genai_stats, consulting_stats, sub_stats):
 
     print("====================================\n")
 
-    print("======== TOP 25 SUBREDDITS (GENAI) =========")
+    print("======== TOP 25 SUBREDDITS (QUEER) =========")
     try:
-        path = os.path.join(DATA_DIR, "GENAI_merged.csv")
+        path = os.path.join(DATA_DIR, "QUEER_merged.csv")
         if os.path.exists(path):
             df = pd.read_csv(path)
             if "community" in df.columns and not df.empty:
@@ -407,11 +407,11 @@ def print_global_summary(genai_stats, consulting_stats, sub_stats):
                 for i, (sub, count) in enumerate(counts.items(), start=1):
                     print(f"{i}. {sub:<25} {count} posts")
             else:
-                print("GENAI leaderboard unavailable: empty file or missing 'community' column.")
+                print("QUEER leaderboard unavailable: empty file or missing 'community' column.")
         else:
-            print("GENAI leaderboard unavailable: file not found.")
+            print("QUEER leaderboard unavailable: file not found.")
     except Exception as e:
-        print(f"Could not load GENAI leaderboard: {e}")
+        print(f"Could not load QUEER leaderboard: {e}")
 
     print("============================================\n")
 
@@ -432,31 +432,31 @@ def deduplicate_all_csvs():
 
 async def run_all_once():
     """Run all scrapers sequentially and return their summary dicts."""
-    genai_stats = await run_keyword_scraper(
-        label="GENAI",
+    queer_stats = await run_keyword_scraper(
+        label="QUEER",
         community="all",
-        keywords=GENAI_KEYWORDS,
-        merged_filename="GENAI_merged.csv",
+        keywords=QUEER_KEYWORDS,
+        merged_filename="QUEER_merged.csv",
         sleep_secs=3,
         limit_per_keyword=250,
     )
 
-    if CONSULTING_KEYWORDS:
-        consulting_stats = await run_keyword_scraper(
-            label="CONSULTING",
+    if QUEER_KEYWORDS2:
+        queer2_stats = await run_keyword_scraper(
+            label="QUEER2",
             community="all",
-            keywords=CONSULTING_KEYWORDS,
-            merged_filename="consulting_kw_merged.csv",
+            keywords=QUEER_KEYWORDS2,
+            merged_filename="QUEER_merged.csv",
             sleep_secs=3,
             limit_per_keyword=250,
         )
     else:
-        consulting_stats = {
+        queer2_stats = {
             "new_posts": 0,
             "raw_total": 0,
             "final_total": 0,
         }
-        print("CONSULTING scraper skipped: no keywords provided.\n")
+        print("QUEER2 scraper skipped: no keywords provided.\n")
 
     sub_stats = await run_subreddit_scraper(
         communities=SUBREDDIT_COMMUNITIES,
@@ -464,7 +464,7 @@ async def run_all_once():
         sleep_secs=2,
     )
 
-    return genai_stats, consulting_stats, sub_stats
+    return queer_stats, queer2_stats, sub_stats
 
 async def countdown_minutes(minutes):
     """Display a live countdown in the terminal."""
@@ -482,9 +482,9 @@ async def run_cycle():
     sys.stdout.write("\033c")
     sys.stdout.flush()
 
-    genai_stats, consulting_stats, sub_stats = await run_all_once()
+    queer_stats, queer2_stats, sub_stats = await run_all_once()
     deduplicate_all_csvs()
-    print_global_summary(genai_stats, consulting_stats, sub_stats)
+    print_global_summary(queer_stats, queer2_stats, sub_stats)
 
 async def scheduler():
     """Main hourly loop with clean terminal + countdown refresh."""
@@ -502,4 +502,5 @@ async def scheduler():
 if __name__ == "__main__":
     # Use run_cycle() for a single run, scheduler() for continuous mode
     asyncio.run(run_cycle())
+    # asyncio.run(scheduler())
     # asyncio.run(scheduler())
