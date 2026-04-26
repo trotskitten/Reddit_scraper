@@ -60,22 +60,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 3
           
-      - name: Send results by email
-        uses: dawidd6/action-send-mail@v6
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Reddit scraper run – CSVs ready"
-          to: ra.nike28@gmail.com
-          from: ${{ secrets.SMTP_USERNAME }}
-          body: |
-            The Reddit scraper has finished running.
-
-            You can download the CSVs from this run here:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Repository: ${{ github.repository }}
-            Run number: ${{ github.run_number }}
+   
