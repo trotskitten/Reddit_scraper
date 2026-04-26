@@ -40,11 +40,23 @@ jobs:
       - name: Set artifact name with timestamp
         run: echo "ARTIFACT_NAME=reddit-scraper-data-$(date -u +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
 
+      - name: Show generated files (debug, but actually useful)
+        run: |
+          echo "Current dir:"
+          pwd
+          echo "Listing everything:"
+          ls -R
+    
+      - name: Prepare artifact folder
+        run: |
+          mkdir -p artifact_out
+          find . -name "*_merged_*.csv" -exec cp {} artifact_out/ \;
+    
       - name: Upload CSV artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: data_tmp/*_merged_*.csv
+          name: reddit-scraper-data
+          path: artifact_out
           if-no-files-found: warn
           retention-days: 3
           
