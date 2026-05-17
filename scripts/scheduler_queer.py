@@ -2,9 +2,7 @@ import asyncio
 import argparse
 import sys
 import os
-import time
 from datetime import datetime, timezone
-from urllib.parse import quote_plus
 
 import aiohttp
 import pandas as pd
@@ -19,10 +17,16 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 DEFAULT_INTERVAL_MINUTES = 120
 
-QUEER_KEYWORDS = ["transgender", "non binary", "agender"]
-QUEER_KEYWORDS2 = ["queer", "gay", "lesbian"]  # can be empty
+QUEER_SEXUALITY_AND_GENDER_KEYWORDS = [
+    "transgender",
+    "non binary",
+    "agender",
+    "queer",
+    "gay",
+    "lesbian",
+]
 
-SUBREDDIT_COMMUNITIES = sorted(set([
+TARGET_SUBREDDITS = sorted(set([
     "ainbow",
     "asktransgender",
     "lgbt",
@@ -35,6 +39,34 @@ SUBREDDIT_COMMUNITIES = sorted(set([
 ]))
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) RedditResearchScraper/1.0"
+
+BASE_POST_COLUMNS = [
+    "id",
+    "title",
+    "selftext",
+    "subreddit",
+    "community",
+    "author",
+    "score",
+    "num_comments",
+    "created_utc",
+    "created_iso",
+    "url",
+    "permalink",
+    "over_18",
+    "is_self",
+    "scraped_at",
+]
+
+KEYWORD_OUTPUT_COLUMNS = BASE_POST_COLUMNS + [
+    "search_keyword",
+    "search_label",
+]
+
+SUBREDDIT_OUTPUT_COLUMNS = BASE_POST_COLUMNS + [
+    "source_type",
+    "source_community",
+]
 
 # =========================
 # HELPERS
@@ -82,7 +114,7 @@ def append_and_merge_csv(new_df, merged_path):
     old_df = safe_read_csv(merged_path)
 
     if old_df.empty and new_df.empty:
-        final_df = pd.DataFrame()
+        final_df = new_df.copy()
     elif old_df.empty:
         final_df = new_df.copy()
     elif new_df.empty:
@@ -90,9 +122,8 @@ def append_and_merge_csv(new_df, merged_path):
     else:
         final_df = pd.concat([old_df, new_df], ignore_index=True)
 
-    if not final_df.empty:
-        final_df = deduplicate_dataframe(final_df)
-        final_df.to_csv(merged_path, index=False)
+    final_df = deduplicate_dataframe(final_df)
+    final_df.to_csv(merged_path, index=False)
 
     return old_df, final_df
 
@@ -303,7 +334,7 @@ async def run_keyword_scraper(label, community, keywords, merged_filename, sleep
             await asyncio.sleep(sleep_secs)
 
     raw_total = len(all_posts)
-    new_df = pd.DataFrame(all_posts)
+    new_df = pd.DataFrame(all_posts, columns=KEYWORD_OUTPUT_COLUMNS)
     merged_path = os.path.join(DATA_DIR, merged_filename)
 
     old_df, final_df = append_and_merge_csv(new_df, merged_path)
@@ -354,7 +385,7 @@ async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs
             await asyncio.sleep(sleep_secs)
 
     raw_total = len(all_posts)
-    new_df = pd.DataFrame(all_posts)
+    new_df = pd.DataFrame(all_posts, columns=SUBREDDIT_OUTPUT_COLUMNS)
     merged_path = os.path.join(DATA_DIR, "subreddits_merged.csv")
 
     old_df, final_df = append_and_merge_csv(new_df, merged_path)
@@ -379,23 +410,18 @@ async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs
 # SUMMARY / ORCHESTRATION
 # =========================
 
-def print_global_summary(queer_stats, queer2_stats, sub_stats):
+def print_global_summary(keyword_stats, subreddit_stats):
     """Unified clean summary printed after all scrapers run."""
     print("\n========== GLOBAL SUMMARY ==========")
 
     print(
-        f"QUEER: {queer_stats.get('new_posts', 0)} new posts "
-        f"(raw: {queer_stats.get('raw_total', 0)}, unique: {queer_stats.get('final_total', 0)})"
+        f"QUEER KEYWORDS: {keyword_stats.get('new_posts', 0)} new posts "
+        f"(raw: {keyword_stats.get('raw_total', 0)}, unique: {keyword_stats.get('final_total', 0)})"
     )
 
     print(
-        f"QUEER2: {queer2_stats.get('new_posts', 0)} new posts "
-        f"(raw: {queer2_stats.get('raw_total', 0)}, unique: {queer2_stats.get('final_total', 0)})"
-    )
-
-    print(
-        f"SUBREDDITS: {sub_stats.get('new_posts', 0)} new posts "
-        f"(raw: {sub_stats.get('raw_total', 0)}, unique: {sub_stats.get('final_total', 0)})"
+        f"SUBREDDITS: {subreddit_stats.get('new_posts', 0)} new posts "
+        f"(raw: {subreddit_stats.get('raw_total', 0)}, unique: {subreddit_stats.get('final_total', 0)})"
     )
 
     print("====================================\n")
@@ -435,39 +461,22 @@ def deduplicate_all_csvs():
 
 async def run_all_once():
     """Run all scrapers sequentially and return their summary dicts."""
-    queer_stats = await run_keyword_scraper(
+    keyword_stats = await run_keyword_scraper(
         label="QUEER",
         community="all",
-        keywords=QUEER_KEYWORDS,
+        keywords=QUEER_SEXUALITY_AND_GENDER_KEYWORDS,
         merged_filename="QUEER_merged.csv",
         sleep_secs=3,
         limit_per_keyword=250,
     )
 
-    if QUEER_KEYWORDS2:
-        queer2_stats = await run_keyword_scraper(
-            label="QUEER2",
-            community="all",
-            keywords=QUEER_KEYWORDS2,
-            merged_filename="QUEER_merged.csv",
-            sleep_secs=3,
-            limit_per_keyword=250,
-        )
-    else:
-        queer2_stats = {
-            "new_posts": 0,
-            "raw_total": 0,
-            "final_total": 0,
-        }
-        print("QUEER2 scraper skipped: no keywords provided.\n")
-
-    sub_stats = await run_subreddit_scraper(
-        communities=SUBREDDIT_COMMUNITIES,
+    subreddit_stats = await run_subreddit_scraper(
+        communities=TARGET_SUBREDDITS,
         per_subreddit_limit=250,
         sleep_secs=2,
     )
 
-    return queer_stats, queer2_stats, sub_stats
+    return keyword_stats, subreddit_stats
 
 async def countdown_minutes(minutes):
     """Display a live countdown in the terminal."""
@@ -485,9 +494,9 @@ async def run_cycle():
     sys.stdout.write("\033c")
     sys.stdout.flush()
 
-    queer_stats, queer2_stats, sub_stats = await run_all_once()
+    keyword_stats, subreddit_stats = await run_all_once()
     deduplicate_all_csvs()
-    print_global_summary(queer_stats, queer2_stats, sub_stats)
+    print_global_summary(keyword_stats, subreddit_stats)
 
 async def scheduler(interval_minutes=DEFAULT_INTERVAL_MINUTES):
     """Run scrape cycles continuously with a countdown between runs."""
