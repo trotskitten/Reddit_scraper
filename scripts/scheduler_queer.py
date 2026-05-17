@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 import sys
 import os
 import time
@@ -15,6 +16,8 @@ import pandas as pd
 BASE_DIR = os.path.dirname(os.path.dirname(__file__)) if "__file__" in globals() else os.getcwd()
 DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
 os.makedirs(DATA_DIR, exist_ok=True)
+
+DEFAULT_INTERVAL_MINUTES = 120
 
 QUEER_KEYWORDS = ["transgender", "non binary", "agender"]
 QUEER_KEYWORDS2 = ["queer", "gay", "lesbian"]  # can be empty
@@ -486,21 +489,38 @@ async def run_cycle():
     deduplicate_all_csvs()
     print_global_summary(queer_stats, queer2_stats, sub_stats)
 
-async def scheduler():
-    """Main hourly loop with clean terminal + countdown refresh."""
-    await run_cycle()
-
-    user_choice = input("Run hourly cycles continuously? [y/N]: ").strip().lower()
-    if user_choice != "y":
-        print("Scheduler finished after single run.")
-        return
-
+async def scheduler(interval_minutes=DEFAULT_INTERVAL_MINUTES):
+    """Run scrape cycles continuously with a countdown between runs."""
     while True:
-        await countdown_minutes(60)
         await run_cycle()
+        await countdown_minutes(interval_minutes)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run the Reddit scraper scheduler.")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        help="Run one scrape cycle and exit. Use this for CI or GitHub Actions.",
+    )
+    parser.add_argument(
+        "--interval-minutes",
+        type=int,
+        default=DEFAULT_INTERVAL_MINUTES,
+        help="Minutes to wait between scheduled runs in continuous mode.",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    if args.interval_minutes <= 0:
+        raise SystemExit("--interval-minutes must be greater than zero.")
+
+    if args.once:
+        asyncio.run(run_cycle())
+    else:
+        asyncio.run(scheduler(args.interval_minutes))
+
 
 if __name__ == "__main__":
-    # Use run_cycle() for a single run, scheduler() for continuous mode
-    asyncio.run(run_cycle())
-    # asyncio.run(scheduler())
-    # asyncio.run(scheduler())
+    main()

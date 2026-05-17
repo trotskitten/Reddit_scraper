@@ -2,8 +2,12 @@ name: Reddit Scraper
 
 on:
   schedule:
-    - cron: "5 */2 * * *"   # run every 5 minutes (UTC)
+    - cron: "5 */2 * * *"   # run every 2 hours (UTC)
   workflow_dispatch:       # allow manual run from GitHub UI
+
+concurrency:
+  group: reddit-scraper
+  cancel-in-progress: false
 
 jobs:
   run-scraper:
@@ -20,10 +24,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install asyncpraw pandas
+          pip install aiohttp asyncpraw pandas
 
       - name: Run scraper
-        run: python scripts/scheduler_queer.py
+        run: python scripts/scheduler_queer.py --once
         env:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
@@ -55,7 +59,7 @@ jobs:
       - name: Upload CSV artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: reddit-scraper-data
+          name: ${{ env.ARTIFACT_NAME }}
           path: artifact_out
           if-no-files-found: warn
           retention-days: 3

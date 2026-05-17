@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 import sys
 from common.reddit_scraper import run_keyword_scraper, run_subreddit_scraper
 from common.cleaning import deduplicate_merged_csvs
@@ -8,6 +9,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data_tmp")
 os.makedirs(DATA_DIR, exist_ok=True)
+
+DEFAULT_INTERVAL_MINUTES = 120
 
 GENAI_KEYWORDS = ["transgender","non binary", "agender"]
 
@@ -97,21 +100,11 @@ async def run_all_once():
     )
     return genai_stats, consulting_stats, sub_stats
 
-async def scheduler():
-    """Main hourly loop with clean terminal + countdown refresh."""
-    # First run
-    await run_cycle()
-
-    # Ask once whether to continue hourly
-    user_choice = input("Run hourly cycles continuously? [y/N]: ").strip().lower()
-    if user_choice != "y":
-        print("Scheduler finished after single run.")
-        return
-
-    # Continuous hourly loop
+async def scheduler(interval_minutes=DEFAULT_INTERVAL_MINUTES):
+    """Run scrape cycles continuously with a countdown between runs."""
     while True:
-        await countdown_minutes(60)
         await run_cycle()
+        await countdown_minutes(interval_minutes)
 
 
 async def run_cycle():
@@ -147,5 +140,32 @@ async def countdown_minutes(minutes):
         print(f"Next execution in {remaining} minute(s)...")
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run the Reddit scraper scheduler.")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        help="Run one scrape cycle and exit. Use this for CI or GitHub Actions.",
+    )
+    parser.add_argument(
+        "--interval-minutes",
+        type=int,
+        default=DEFAULT_INTERVAL_MINUTES,
+        help="Minutes to wait between scheduled runs in continuous mode.",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    if args.interval_minutes <= 0:
+        raise SystemExit("--interval-minutes must be greater than zero.")
+
+    if args.once:
+        asyncio.run(run_cycle())
+    else:
+        asyncio.run(scheduler(args.interval_minutes))
+
+
 if __name__ == "__main__":
-    asyncio.run(run_cycle())
+    main()
