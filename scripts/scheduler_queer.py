@@ -190,10 +190,34 @@ def deduplicate_merged_csvs(csv_folder, quiet=True):
 # REDDIT FETCHING
 # =========================
 
-async def get_reddit_access_token(session):
+def get_reddit_credentials():
+    """Read Reddit credentials without exposing their values in logs."""
+    client_id = (os.environ.get("REDDIT_CLIENT_ID") or "").strip()
+    client_secret = (os.environ.get("REDDIT_CLIENT_SECRET") or "").strip()
+    return client_id, client_secret
+
+
+def print_reddit_credential_diagnostics():
+    """Print safe Reddit credential diagnostics without leaking secrets."""
+    raw_client_id = os.environ.get("REDDIT_CLIENT_ID")
+    raw_client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
+    client_id, client_secret = get_reddit_credentials()
+
+    print("Reddit credential diagnostics:")
+    print(f"- REDDIT_CLIENT_ID present: {'yes' if raw_client_id else 'no'}")
+    print(f"- REDDIT_CLIENT_ID length after trim: {len(client_id)}")
+    print(f"- REDDIT_CLIENT_SECRET present: {'yes' if raw_client_secret else 'no'}")
+    print(f"- REDDIT_CLIENT_SECRET length after trim: {len(client_secret)}")
+
+    if raw_client_id and raw_client_id != client_id:
+        print("- REDDIT_CLIENT_ID has leading/trailing whitespace.")
+    if raw_client_secret and raw_client_secret != client_secret:
+        print("- REDDIT_CLIENT_SECRET has leading/trailing whitespace.")
+
+
+async def get_reddit_access_token(session, require_oauth=False):
     """Return an OAuth token when Reddit credentials are configured."""
-    client_id = os.environ.get("REDDIT_CLIENT_ID")
-    client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
+    client_id, client_secret = get_reddit_credentials()
 
     if not client_id or not client_secret:
         print("Reddit OAuth credentials not found; using public Reddit JSON endpoints.")
@@ -212,18 +236,36 @@ async def get_reddit_access_token(session):
     ) as resp:
         if resp.status != 200:
             text = await resp.text()
-            raise RuntimeError(
-                f"Reddit OAuth failed with status {resp.status}: {text[:300]}"
-            )
+            message = f"Reddit OAuth failed with status {resp.status}: {text[:300]}"
+            if require_oauth:
+                raise RuntimeError(message)
+            print(f"{message}. Falling back to public Reddit JSON endpoints.")
+            return None
 
         payload = await resp.json()
 
     access_token = payload.get("access_token")
     if not access_token:
+        if not require_oauth:
+            print("Reddit OAuth response did not include an access_token; using public Reddit JSON endpoints.")
+            return None
         raise RuntimeError("Reddit OAuth response did not include an access_token.")
 
     print("Reddit OAuth credentials found; using authenticated Reddit API requests.")
     return access_token
+
+
+async def check_reddit_auth():
+    """Check OAuth credentials and return a process exit code."""
+    print_reddit_credential_diagnostics()
+    async with aiohttp.ClientSession() as session:
+        try:
+            await get_reddit_access_token(session, require_oauth=True)
+        except RuntimeError as e:
+            print(f"Reddit OAuth check failed: {e}")
+            return 1
+    print("Reddit OAuth check succeeded.")
+    return 0
 
 
 def reddit_headers(access_token=None):
@@ -616,6 +658,11 @@ def parse_args():
         action="store_true",
         help="Fail if any configured keyword or subreddit returns zero posts.",
     )
+    parser.add_argument(
+        "--check-reddit-auth",
+        action="store_true",
+        help="Check Reddit OAuth credentials and exit without scraping.",
+    )
     return parser.parse_args()
 
 
@@ -623,6 +670,9 @@ def main():
     args = parse_args()
     if args.interval_minutes <= 0:
         raise SystemExit("--interval-minutes must be greater than zero.")
+
+    if args.check_reddit_auth:
+        raise SystemExit(asyncio.run(check_reddit_auth()))
 
     if args.once:
         asyncio.run(run_cycle(require_posts=args.require_posts))
