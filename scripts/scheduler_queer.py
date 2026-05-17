@@ -190,9 +190,53 @@ def deduplicate_merged_csvs(csv_folder, quiet=True):
 # REDDIT FETCHING
 # =========================
 
-async def fetch_json(session, url, params=None, retries=3, sleep_secs=2):
-    """Fetch JSON with basic retry handling."""
+async def get_reddit_access_token(session):
+    """Return an OAuth token when Reddit credentials are configured."""
+    client_id = os.environ.get("REDDIT_CLIENT_ID")
+    client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
+
+    if not client_id or not client_secret:
+        print("Reddit OAuth credentials not found; using public Reddit JSON endpoints.")
+        return None
+
     headers = {"User-Agent": USER_AGENT}
+    auth = aiohttp.BasicAuth(client_id, client_secret)
+    data = {"grant_type": "client_credentials"}
+
+    async with session.post(
+        "https://www.reddit.com/api/v1/access_token",
+        headers=headers,
+        auth=auth,
+        data=data,
+        timeout=30,
+    ) as resp:
+        if resp.status != 200:
+            text = await resp.text()
+            raise RuntimeError(
+                f"Reddit OAuth failed with status {resp.status}: {text[:300]}"
+            )
+
+        payload = await resp.json()
+
+    access_token = payload.get("access_token")
+    if not access_token:
+        raise RuntimeError("Reddit OAuth response did not include an access_token.")
+
+    print("Reddit OAuth credentials found; using authenticated Reddit API requests.")
+    return access_token
+
+
+def reddit_headers(access_token=None):
+    """Build request headers for public or OAuth Reddit requests."""
+    headers = {"User-Agent": USER_AGENT}
+    if access_token:
+        headers["Authorization"] = f"Bearer {access_token}"
+    return headers
+
+
+async def fetch_json(session, url, params=None, access_token=None, retries=3, sleep_secs=2):
+    """Fetch JSON with basic retry handling."""
+    headers = reddit_headers(access_token)
 
     for attempt in range(1, retries + 1):
         try:
@@ -216,12 +260,16 @@ async def fetch_json(session, url, params=None, retries=3, sleep_secs=2):
                 print(f"Request exception for {url}: {e}")
                 return None
 
-async def fetch_search_results(session, query, limit_total=250, sleep_secs=2):
+async def fetch_search_results(session, query, limit_total=250, sleep_secs=2, access_token=None):
     """
-    Search Reddit sitewide for a query using public JSON endpoint.
+    Search Reddit sitewide for a query.
     Paginates with 'after'.
     """
-    url = "https://www.reddit.com/search.json"
+    if access_token:
+        url = "https://oauth.reddit.com/search"
+    else:
+        url = "https://www.reddit.com/search.json"
+
     posts = []
     after = None
 
@@ -238,7 +286,7 @@ async def fetch_search_results(session, query, limit_total=250, sleep_secs=2):
         if after:
             params["after"] = after
 
-        data = await fetch_json(session, url, params=params)
+        data = await fetch_json(session, url, params=params, access_token=access_token)
         if not data:
             break
 
@@ -258,11 +306,15 @@ async def fetch_search_results(session, query, limit_total=250, sleep_secs=2):
 
     return posts
 
-async def fetch_subreddit_new(session, subreddit, limit_total=250, sleep_secs=2):
+async def fetch_subreddit_new(session, subreddit, limit_total=250, sleep_secs=2, access_token=None):
     """
-    Fetch newest posts from a subreddit using public JSON endpoint.
+    Fetch newest posts from a subreddit.
     """
-    url = f"https://www.reddit.com/r/{subreddit}/new.json"
+    if access_token:
+        url = f"https://oauth.reddit.com/r/{subreddit}/new"
+    else:
+        url = f"https://www.reddit.com/r/{subreddit}/new.json"
+
     posts = []
     after = None
 
@@ -275,7 +327,7 @@ async def fetch_subreddit_new(session, subreddit, limit_total=250, sleep_secs=2)
         if after:
             params["after"] = after
 
-        data = await fetch_json(session, url, params=params)
+        data = await fetch_json(session, url, params=params, access_token=access_token)
         if not data:
             break
 
@@ -312,8 +364,11 @@ async def run_keyword_scraper(label, community, keywords, merged_filename, sleep
     print()
 
     all_posts = []
+    per_keyword_counts = {}
 
     async with aiohttp.ClientSession() as session:
+        access_token = await get_reddit_access_token(session)
+
         for kw in keywords:
             print(f"[{label}] Searching keyword: {kw}")
             posts = await fetch_search_results(
@@ -321,7 +376,9 @@ async def run_keyword_scraper(label, community, keywords, merged_filename, sleep
                 query=kw,
                 limit_total=limit_per_keyword,
                 sleep_secs=sleep_secs,
+                access_token=access_token,
             )
+            per_keyword_counts[kw] = len(posts)
 
             # tag keyword origin
             for post in posts:
@@ -353,6 +410,7 @@ async def run_keyword_scraper(label, community, keywords, merged_filename, sleep
         "new_posts": new_posts,
         "raw_total": raw_total,
         "final_total": final_total,
+        "per_keyword_counts": per_keyword_counts,
     }
 
 async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs=2):
@@ -364,8 +422,11 @@ async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs
     print()
 
     all_posts = []
+    per_subreddit_counts = {}
 
     async with aiohttp.ClientSession() as session:
+        access_token = await get_reddit_access_token(session)
+
         for sub in communities:
             print(f"[SUBREDDIT] Fetching /r/{sub}")
             posts = await fetch_subreddit_new(
@@ -373,7 +434,9 @@ async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs
                 subreddit=sub,
                 limit_total=per_subreddit_limit,
                 sleep_secs=sleep_secs,
+                access_token=access_token,
             )
+            per_subreddit_counts[sub] = len(posts)
 
             for post in posts:
                 post["source_type"] = "subreddit"
@@ -404,6 +467,7 @@ async def run_subreddit_scraper(communities, per_subreddit_limit=250, sleep_secs
         "new_posts": new_posts,
         "raw_total": raw_total,
         "final_total": final_total,
+        "per_subreddit_counts": per_subreddit_counts,
     }
 
 # =========================
@@ -443,6 +507,34 @@ def print_global_summary(keyword_stats, subreddit_stats):
         print(f"Could not load QUEER leaderboard: {e}")
 
     print("============================================\n")
+
+def validate_posts_retrieved(keyword_stats, subreddit_stats):
+    """Fail clearly when a required scrape source returned no posts."""
+    empty_keywords = [
+        keyword
+        for keyword, count in keyword_stats.get("per_keyword_counts", {}).items()
+        if count == 0
+    ]
+    empty_subreddits = [
+        subreddit
+        for subreddit, count in subreddit_stats.get("per_subreddit_counts", {}).items()
+        if count == 0
+    ]
+
+    if not empty_keywords and not empty_subreddits:
+        return
+
+    message_parts = []
+    if empty_keywords:
+        message_parts.append(f"keywords with zero posts: {', '.join(empty_keywords)}")
+    if empty_subreddits:
+        message_parts.append(f"subreddits with zero posts: {', '.join(empty_subreddits)}")
+
+    raise RuntimeError(
+        "Reddit scrape did not retrieve posts for all configured sources; "
+        + "; ".join(message_parts)
+        + ". Check the request logs above and verify Reddit API credentials."
+    )
 
 def deduplicate_all_csvs():
     """Run deduplication across all merged CSVs and log the results."""
@@ -489,7 +581,7 @@ async def countdown_minutes(minutes):
         sys.stdout.write("\033[K")
         print(f"Next execution in {remaining} minute(s)...")
 
-async def run_cycle():
+async def run_cycle(require_posts=False):
     """Execute one full scrape/dedupe/summary cycle with clean screen."""
     sys.stdout.write("\033c")
     sys.stdout.flush()
@@ -497,11 +589,13 @@ async def run_cycle():
     keyword_stats, subreddit_stats = await run_all_once()
     deduplicate_all_csvs()
     print_global_summary(keyword_stats, subreddit_stats)
+    if require_posts:
+        validate_posts_retrieved(keyword_stats, subreddit_stats)
 
-async def scheduler(interval_minutes=DEFAULT_INTERVAL_MINUTES):
+async def scheduler(interval_minutes=DEFAULT_INTERVAL_MINUTES, require_posts=False):
     """Run scrape cycles continuously with a countdown between runs."""
     while True:
-        await run_cycle()
+        await run_cycle(require_posts=require_posts)
         await countdown_minutes(interval_minutes)
 
 def parse_args():
@@ -517,6 +611,11 @@ def parse_args():
         default=DEFAULT_INTERVAL_MINUTES,
         help="Minutes to wait between scheduled runs in continuous mode.",
     )
+    parser.add_argument(
+        "--require-posts",
+        action="store_true",
+        help="Fail if any configured keyword or subreddit returns zero posts.",
+    )
     return parser.parse_args()
 
 
@@ -526,9 +625,9 @@ def main():
         raise SystemExit("--interval-minutes must be greater than zero.")
 
     if args.once:
-        asyncio.run(run_cycle())
+        asyncio.run(run_cycle(require_posts=args.require_posts))
     else:
-        asyncio.run(scheduler(args.interval_minutes))
+        asyncio.run(scheduler(args.interval_minutes, require_posts=args.require_posts))
 
 
 if __name__ == "__main__":

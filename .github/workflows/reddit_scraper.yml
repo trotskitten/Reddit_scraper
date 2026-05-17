@@ -28,7 +28,7 @@ jobs:
 
       - name: Run scraper
         id: run_scraper
-        run: python scripts/scheduler_queer.py --once
+        run: python scripts/scheduler_queer.py --once --require-posts
         env:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
